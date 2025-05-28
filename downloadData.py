@@ -28,7 +28,7 @@ username_field.send_keys(pems_user)
 password_field.send_keys(pems_password)
 submit_button.click()
 
-time.sleep(20)  # Wait for login to complete
+time.sleep(10)  # Wait for login to complete
 
 # # confirm login 
 # driver.page_source: returns the HTML source code of the current page
@@ -42,44 +42,65 @@ if "Data Clearinghouse" in driver.page_source:
     print("Data Clearinghouse page loaded successfully")
 
 # 4. Fill in download form
+# field: type
 select_element = driver.find_element(By.ID, "type")
 select = Select(select_element)
-select.select_by_visible_text('Station Hour')
+select.select_by_visible_text('Station 5-Minute')
 
+# field: district
 select_element_district = driver.find_element(By.ID, "district_id")
 select_district = Select(select_element_district)
 select_district.select_by_visible_text('District 7')
 
+# field: submit button
 submit_form = driver.find_element(by=By.NAME, value="submit")
 submit_form.click()
 
-time.sleep(20)
+time.sleep(15)
 
-if "contains the hourly totals for each active station on the given day" in driver.page_source:
+
+if "hourly totals for each active station" in driver.page_source:
     print("Data page loaded successfully")
+else:
+    print(driver.page_source)
 
 # go through each row of the table (each row is a different year of data)
-data_table = driver.find_element(By.ID, "kgwdmvrbdo")
+table_xpath = "/html/body/div[1]/div[2]/div[1]/div/div/div/div/div/div[1]/div[1]/div/div/table"
+data_table = driver.find_element(By.XPATH, table_xpath)
 rows = data_table.find_elements(By.XPATH, ".//tbody/tr")
-print(len(rows))
+# print(len(rows))  # 25 years and the header row
 
-for i in range(0, len(rows)):
+for i in range(1, len(rows)):
     # get the year from the first column of the row
     year = rows[i].find_element(By.XPATH, ".//td[1]").text
-    print(year)
-    if year == '24':
+    print("Year: " + year)
+    # get data from 2020-2025
+    if year == '19':
         break
     # click on the link in the second column of the row
     # each gray box in the same row has the same list of links for the given year
     link = rows[i].find_element(By.XPATH, ".//td[2]/a")
+    # print(link.get_attribute("href"))
     link.click()
 
+    time.sleep(10)
 
-    time.sleep(5)  # Wait for page to load
+    # print list of files to download
+    data_files_xpath = "/html/body/div[1]/div[2]/div[1]/div/div/div/div/div/div[4]/div[2]/div/div/table"
+    data_files_table = driver.find_element(By.XPATH, data_files_xpath)
+    data_files_rows = data_files_table.find_elements(By.XPATH, ".//tbody/tr")
+    print('Number of files to download: ' + str(len(data_files_rows)))
 
-# # # 5. Submit the form
-# # driver.find_element(By.NAME, "export").click()
-# # time.sleep(5)  # Wait for file download to begin
+    # iterate through the data files
+    for j in range(1, len(data_files_rows)):
+        file_name = data_files_rows[j].find_element(By.XPATH, ".//td[1]/a")
+        if file_name.text in os.listdir(path="/Users/lucy/Downloads/"):
+            print('File already exists: ' + file_name.text)
+            continue
+        print('Downloading....' + file_name.text)
+        file_name.click() # click on file link to download
+        time.sleep(15)
+        
 
 # # # 6. Close browser
-# # driver.quit()
+driver.quit()
