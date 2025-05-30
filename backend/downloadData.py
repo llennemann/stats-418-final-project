@@ -45,8 +45,8 @@ if "Data Clearinghouse" in driver.page_source:
 # field: type
 select_element = driver.find_element(By.ID, "type")
 select = Select(select_element)
-select.select_by_visible_text('Station 5-Minute')
-
+select.select_by_visible_text('Station Hour')
+ 
 # field: district
 select_element_district = driver.find_element(By.ID, "district_id")
 select_district = Select(select_element_district)
@@ -75,7 +75,7 @@ for i in range(1, len(rows)):
     year = rows[i].find_element(By.XPATH, ".//td[1]").text
     print("Year: " + year)
     # get data from 2020-2025
-    if year == '19':
+    if year == '23':
         break
     # click on the link in the second column of the row
     # each gray box in the same row has the same list of links for the given year
@@ -94,12 +94,16 @@ for i in range(1, len(rows)):
     # iterate through the data files
     for j in range(1, len(data_files_rows)):
         file_name = data_files_rows[j].find_element(By.XPATH, ".//td[1]/a")
-        if file_name.text in os.listdir(path="/Users/lucy/Downloads/"):
+        if file_name.text in os.listdir(path="/Users/lucy/Downloads"):
             print('File already exists: ' + file_name.text)
             continue
         print('Downloading....' + file_name.text)
         file_name.click() # click on file link to download
-        time.sleep(15)
+        seconds = 0
+        dl_wait = True
+        while any([filename.endswith(".crdownload") for filename in os.listdir("/Users/lucy/Downloads")]):
+            time.sleep(1)
+        #time.sleep(15)
         
 
 # # # 6. Close browser
