@@ -5,20 +5,20 @@ import shutil
 import pandas as pd
 
 my_data_path = '/Users/lucy/Downloads'
-dest_path = '/Users/lucy/Desktop/UCLA/pems_data'
+dest_path = '/Users/lucy/Desktop/UCLA/pems_data/pems_data_station_hour'
 
 os.chdir(dest_path)
 print(os.getcwd()) # print current working directory
 
-pems_data = [f for f in os.listdir(path=".") if 'text_station_5min_2024' in f]
+pems_data = [f for f in os.listdir(path=".") if 'text_station_hour_2024' in f]
 
 # Output CSV file path
-output_path = "merged.csv"
+output_path = "merged_hour.csv"
 
 for file in pems_data:
     print("Processing:", file)
     # move file from Downloads to pems_data folder
-    # print(shutil.move(my_data_path + '/' + file, dest_path + '/' + file))
+    #print(shutil.move(my_data_path + '/' + file, dest_path + '/' + file))
     with gzip.open(file, 'rt') as f:
         curr_df = pd.read_csv(f)
         # Append to CSV file with mode=a
