@@ -1,6 +1,6 @@
 services:
   app-slim:
-    platform: “linux/amd64"
+    platform: "linux/amd64"
     build : .
     volumes:
      - .:/server
