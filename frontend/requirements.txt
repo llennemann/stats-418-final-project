@@ -1,10 +1,12 @@
 altair==5.5.0
 attrs==25.3.0
 blinker==1.9.0
+branca==0.8.1
 cachetools==5.5.2
 certifi==2025.4.26
 charset-normalizer==3.4.2
 click==8.2.1
+folium==0.19.6
 gitdb==4.0.12
 GitPython==3.1.44
 idna==3.10
@@ -28,9 +30,11 @@ rpds-py==0.25.1
 six==1.17.0
 smmap==5.0.2
 streamlit==1.45.1
+streamlit_folium==0.25.0
 tenacity==9.1.2
 toml==0.10.2
 tornado==6.5.1
 typing_extensions==4.13.2
 tzdata==2025.2
 urllib3==2.4.0
+xyzservices==2025.4.0

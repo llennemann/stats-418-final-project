@@ -1,6 +1,7 @@
 # backend for my web app in Flask
 import os
 from flask import Flask, jsonify, request
+from model import build_prophet_model, make_predictions, filter_dataset_by_station, load_data
 
 import json
 
@@ -9,21 +10,38 @@ HEADERS = {'Content-type': 'application/json', 'Accept': 'text/plain'}
 
 def flask_app():
     app = Flask(__name__)
+    df = load_data()  # Load the data once at the start
+    print(df['timestamp_conv'].dtype)
 
-
-    # define routes here....
     @app.route('/', methods=['GET'])
     def server_is_up():
         # print("success")
         return 'backend running! :)   \n \n'
 
-    # @app.route('/power_of_two', methods=['POST'])
-    # def start():
-    #     to_predict = request.json
 
-    #     print(to_predict)
-    #     pred = predict(to_predict)
-    #     return jsonify({"power of two":pred})
+    # take station ID from user, # of hours or days to predict, and H OR D
+    # return prediction from prophet model based on historical data
+    @app.route('/forecast-traffic', methods=['POST'])
+    def predict_station():
+        # read in payload
+        body = request.json
+        station_id = int(body.get("station_id"))
+        num_periods = int(body.get("periods"))
+        freq = body.get("freq") # H for hourly, D for daily
+
+        # filter based on user input of station ID
+        print("Filtering dataset for station ID:", station_id, "...")
+        filtered_df = filter_dataset_by_station(df, station_id)
+
+        # build_prophet_model
+        print("Building Prophet model...")
+        mod = build_prophet_model(filtered_df)
+
+        # predict
+        print("Predicting...")
+        make_predictions(mod, num_periods, freq)
+        print("Prediction complete and plots created...")
+        return jsonify({'message': 'Success'}), 200
     return app
 
 if __name__ == '__main__':

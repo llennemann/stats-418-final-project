@@ -7,3 +7,4 @@ docker buildx build --platform linux/amd64 -t docker.io/llennema/418-final-proje
 
 dockerhub repo: llennema/418-final-project-traffic
 
+data: https://drive.google.com/file/d/1eMif1bVGK2udtY62DmLLI85nE0Fc402a/view?usp=sharing 

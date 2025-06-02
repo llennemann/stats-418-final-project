@@ -1,2 +1,5 @@
 venv/
 .env
+__pycache__/
+backend/merged_hour.csv
+backend/merged_hour_preprocessed.csv
