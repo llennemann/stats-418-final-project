@@ -1,6 +1,6 @@
 # backend for my web app in Flask
 import os
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 from model import build_prophet_model, make_predictions, filter_dataset_by_station, load_data
 
 import json
@@ -18,6 +18,11 @@ def flask_app():
         # print("success")
         return 'backend running! :)   \n \n'
 
+
+    @app.route("/get-prophet-image", methods=['GET'])
+    def get_prophet_image():
+        # np_parameters_plot
+        return send_file("np_parameters_plot.png", mimetype="image/png")
 
     # take station ID from user, # of hours or days to predict, and H OR D
     # return prediction from prophet model based on historical data
@@ -39,7 +44,7 @@ def flask_app():
 
         # predict
         print("Predicting...")
-        make_predictions(mod, num_periods, freq)
+        make_predictions(mod, filtered_df, num_periods, freq)
         print("Prediction complete and plots created...")
         return jsonify({'message': 'Success'}), 200
     return app

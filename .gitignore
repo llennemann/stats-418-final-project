@@ -1,5 +1,7 @@
 venv/
 .env
 __pycache__/
+lightning_logs/
 backend/merged_hour.csv
 backend/merged_hour_preprocessed.csv
+backend/merged_hour_preprocessed_small.csv
