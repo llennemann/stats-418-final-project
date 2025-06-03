@@ -10,17 +10,18 @@ import os
 
 print(os.getcwd())
 print(os.listdir(os.getcwd()))
-file_path = os.path.join(os.path.dirname(__file__), "station_metadata.txt")
+station_metadata_file_path = os.path.join(os.path.dirname(__file__), "station_metadata.txt")
 
-map_data = pd.read_csv(file_path, sep="\t")
+map_data = pd.read_csv(station_metadata_file_path, sep="\t")
 filtered_map_data = map_data.dropna(subset=['Latitude', 'Longitude'])
 
 st.title('Los Angeles Traffic Prediction')
 st.subheader('Select a station to forecast traffic')
 
 # only display filtered stations 
-# read the station metadata file
-with open('../notebooks/filtered_reduced_stations.txt', 'r') as f:
+filtered_stations_file_path = os.path.join(os.path.dirname(__file__), "filtered_reduced_stations.txt")
+
+with open(filtered_stations_file_path, 'r') as f:
     filtered_stations = [int(line.replace('\n', '')) for line in f.readlines()]
 
 # print(len(filtered_stations)) 344 stations
