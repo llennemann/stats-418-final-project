@@ -6,9 +6,11 @@ from streamlit_folium import st_folium
 import requests
 from PIL import Image
 import io
+import os
 
+file_path = os.path.join(os.path.dirname(__file__), "station_metadata.txt")
 
-map_data = pd.read_csv("station_metadata.txt", sep="\t")
+map_data = pd.read_csv(file_path, sep="\t")
 filtered_map_data = map_data.dropna(subset=['Latitude', 'Longitude'])
 
 st.title('Los Angeles Traffic Prediction')
@@ -90,7 +92,7 @@ if 'selected_station' in st.session_state:
     )
     if st.button(f"Predict for station {station}?"):
         st.success(f" Prediction triggered for station {station}")
-        url = "http://localhost:5001/forecast-traffic"  
+        url = "https://traffic-prediction-los-angeles-418-26302743692.europe-west1.run.app/forecast-traffic"  
         payload = {
             "station_id": str(station_id),
             "freq": freq,
@@ -101,7 +103,7 @@ if 'selected_station' in st.session_state:
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 st.success(f"Prediction complete for station {station}")
-                img_res = requests.get("http://localhost:5001/get-prophet-image")
+                img_res = requests.get("https://traffic-prediction-los-angeles-418-26302743692.europe-west1.run.app/get-prophet-image")
                 img = Image.open(io.BytesIO(img_res.content))
                 st.image(img, caption="NeuralProphet Forecast Components for Average Speed over Time", 
                          use_container_width=True)
