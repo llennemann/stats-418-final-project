@@ -8,6 +8,8 @@ from PIL import Image
 import io
 import os
 
+print(os.getcwd())
+print(os.listdir(os.getcwd()))
 file_path = os.path.join(os.path.dirname(__file__), "station_metadata.txt")
 
 map_data = pd.read_csv(file_path, sep="\t")
