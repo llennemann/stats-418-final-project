@@ -99,6 +99,7 @@ PROJECT418/
 
 
 ## Future Work
+- Use the user inputs of number of periods and frequency and add in a graph to show forecasted trends in the future
 - Optimize memory usage and data management plan to be able to use more historical data
 - Find a way to not bundle the large dataset into the Docker container
 - Allow user to add their commute to the frontend and predict average speed or total flow on the commute
