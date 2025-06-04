@@ -95,6 +95,7 @@ if 'selected_station' in st.session_state:
     )
     if st.button(f"Predict for station {station}?"):
         st.success(f" Prediction triggered for station {station}")
+        
         url = "https://traffic-prediction-los-angeles-418-26302743692.europe-west1.run.app/forecast-traffic"  
         payload = {
             "station_id": str(station_id),
@@ -103,7 +104,9 @@ if 'selected_station' in st.session_state:
         }
 
         try:
+            print("Calling POST route")
             response = requests.post(url, json=payload)
+            print("Response status code:", response.status_code)
             if response.status_code == 200:
                 st.success(f"Prediction complete for station {station}")
                 img_res = requests.get("https://traffic-prediction-los-angeles-418-26302743692.europe-west1.run.app/get-prophet-image")

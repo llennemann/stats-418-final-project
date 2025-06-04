@@ -1,31 +1,39 @@
-# Los Angeles Traffic Prediction
+# Los Angeles Traffic Forecasting
+
+## Contents of this README
+1. [Overview](#overview)
+2. [Methodology](#methodology)
+3. [Folder Structure](#folderstructure)
+4. [Usage](#usage)
 
 ## Overview
 
-This project is a full-stack machine learning application that forecasts traffic conditions given a Los Angeles highway station. It combines data processing, forecasting using Facebook Prophet, and visualization in an interactive Streamlit app. The backend is powered by a Flask API and containerized with Docker, enabling scalable deployment on platforms such as Google Cloud Run. The motivation for the project is to inform users about traffic conditions and levels of congestion. 
+This project is a full-stack machine learning application that forecasts traffic conditions given a Los Angeles highway station. It combines web scraping, data processing, forecasting using NeuralProphet, and visualization in an interactive Streamlit app. The backend is powered by a Flask API and containerized with Docker, enabling scalable deployment on platforms such as Google Cloud Run. The motivation for the project is to inform general users, urban planners, and city officials about traffic conditions and levels of congestion. 
 
-⸻
+My interest in the project stems from my time working at the UC San Diego library, where I worked with a lot of datasets collected by the state or federal government, such as Census data. I'm especially interested in geographic data and visualizing data based on physical location of where the data was collected. 
+
+
 
 ## Methodology 
 
 ### Data Source and Collection
-The data is sourced from the [Caltrans Performance Measurement System (PeMS)](https://dot.ca.gov/programs/traffic-operations/mpr/pems-source), which contains historical data from almost forty thousand sensors along major California highways. For this project, I narrowed the scope to data from 2024 in Los Angeles County. I used Selenium to webscrape the .gz files from the PeMS system, as specified in the `downloadData.py` script. 
+The data is sourced from the [Caltrans Performance Measurement System (PeMS)](https://dot.ca.gov/programs/traffic-operations/mpr/pems-source), which contains historical data from almost forty thousand sensors along major California highways. For this project, I narrowed the scope to data from 2024 in Los Angeles County, or Caltrans District 7. I used Selenium to automatically download the .gz files provided by the PeMS system, as specified in the `downloadData.py` script. 
 
 ### Data Pipeline
-    1. Use the `moveFiles.py` script to combine monthly CSV data into one CSV (size 5.5 GB)
-	2.	Preprocessing with Dask: Load raw CSV data, change column names and filter out rows with more than 60% missing values in the feature `total_flow`. Further reduced the dataset by a factor of 10, pulling out every 10th station, to save on computation and memory requirements. Save as a CSV which can be loaded in by Flask. 
-	3. Convert to pandas: After user enters a station id, filter the Dask dataframe by station id to about ~8k rows and switch to pandas for modeling. 
+1. Pulling CSV files: I pulled the Station Hour files from PeMS, where each file represented one month of data. Each file had sensor data from one hour of monitoring, including information like average speed and total vehicle flow. I used the `moveFiles.py` script to combine monthly CSV data into one CSV (size 5.5 GB)
+2.	Preprocessing with Dask: I used the Python library Dask due to the volume of data and to speed up computation. I processed the dataframe by changing the column names and filtering out rows with more than 60% missing values in the feature `total_flow`. I then further reduced the dataset by a factor of 10, pulling out every 10th station, to save on computation and memory requirements. Then, I saved the preprocessed data as a CSV which is loaded in by Flask. 
+3. Convert to pandas: After the user enters a station id, I filter the Dask dataframe by station id to about ~8k rows and switch to pandas for easier exploratory data analysis and modeling. 
 
 
 ### Exploratory Data Analysis
-Some steps I took to analyze the data included:
+Some steps I took to explore the data included:
 - Using Dask's `compute` funcion to specifically compute attributes like dataset dimensions and feature data types
-- Initially filtered the dataset down to just one station ID to make EDA easier 
-- Looked at null values in the dataset and created heatmaps to visualize patterns of null values  
+- Looking at the data from just one station ID to make EDA easier and faster
+- Analyzing null values in the dataset and creating heatmaps to visualize patterns of null values  
 
 ![Local Image](images/null_heatmap.png)
 
-- Looked at different features from the PeMS dataset with the filtered down dataset to get a preliminary understanding of daily and monthly trends 
+- Looked at different features from the PeMS dataset with the filtered down dataset to get a preliminary understanding of daily and monthly trends, such as total flow measured in vehicles per hour and  
 
 
 
@@ -92,16 +100,6 @@ Backend
 	•	Docker: Containerize and deploy Flask app
 	•	Google Cloud Run: Serverless deployment platform
 
-
-⸻
-
-Data Pipeline
-	1.	Preprocessing with Dask: Load and filter raw CSV data (station, timestamp, speed)
-	2.	Convert to pandas: Once filtered (~8K rows), switch to pandas for modeling
-	3.	Prophet Forecasting:
-	•	Convert columns to Prophet’s expected schema (ds, y)
-	•	Fit and forecast future speed values
-	•	Save interactive forecast component plots (trend, weekly, etc.)
 
 ⸻
 
@@ -180,10 +178,3 @@ docker run -p 5001:5001 traffic-backend
 To redeploy on Google Cloud Run:
 	1.	Push updated Docker image to DockerHub
 	2.	Redeploy via Cloud Run UI or CLI
-
-⸻
-
-Acknowledgments
-	•	Facebook Prophet team for robust forecasting library
-	•	Caltrans for PeMS traffic data
-	•	Streamlit community for open source interactivity tools
