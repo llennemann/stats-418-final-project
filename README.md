@@ -66,8 +66,12 @@ The Flask API utilizes functions defined in the `model.py` file, which has the f
 - `load_data`: Uses Dask, a Python library, to read in some preprocessed data from a large CSV file and converts the time column to datetime format, which Prophet requires. 
 - `filter_dataset_by_station`: Filters the data by station ID and converts the Dask dataframe to a Pandas dataframe to pass in to the Prophet model. 
 - `build_prophet_model`: Pulls out the time and average speed features to fit the Prophet model.
-- `make_predictions`: Takes in the fitted Prophet model, number of periods, and frequency (h or d) to make a forecast and generate plots for traffic trends. 
+- `make_predictions`: Takes in the fitted NeuralProphet model, number of periods, and frequency (h or d) to make a forecast and generate plots for traffic trends. 
 
+For the NeuralProphet model, it runs on PyTorch. Below is one example of the metrics for the final epoch of fitting the model:
+| Epoch |   MAE   |   RMSE   |   Loss   | RegLoss |
+|:-----:|:-------:|:--------:|:--------:|:-------:|
+|  59   | 3.35576 | 4.445188 | 0.016885 |  0.000  |
 
 ### Frontend
 The user application is deployed with Streamlit and hosted on Streamlit Community Cloud. I used the library Folium to create a map of PeMS stations that users can interact with. I also used Plotly to visualize traffic trends based on the user's inputted station, number of periods, and frequency (hours or days). Once the user inputs what they want, the frontend will call the backend and display visualizations for the forecasted average speed, weekly average speed trends, and hourly average speed trends. 
